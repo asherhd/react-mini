@@ -1,6 +1,6 @@
 # 项目流程图
 
-```mermaid
+```
 graph TD
     A[main.ts 应用入口] --> B[render 渲染虚拟DOM]
     B --> C[Fiber beginWork/completeWork]
@@ -19,7 +19,7 @@ graph TD
 
 # 运行时流程图
 
-```mermaid
+```
 graph TD
     A[页面加载] --> B[main.ts 获取 root]
     B --> C[render(App, root)]
