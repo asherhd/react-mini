@@ -1,18 +1,22 @@
-// TodoApp.tsx
+// TodoApp.tsx (JSX 版)
 import { createElement, useState } from '../core';
 
 function TodoList() {
   const [list, setList] = useState(['A', 'B', 'C']);
-  return createElement('div', {},
-    createElement('ul', {},
-      ...list.map((item: string) => createElement('li', { key: item }, item))
-    ),
-    createElement('button', { onClick: () => setList((prev: any) => prev.reverse()) }, '变更顺序')
+  return (
+    <div>
+      <ul>
+        {list.map((item: string) => <li key={item}>{item}</li>)}
+      </ul>
+      <button onClick={() => setList((prev:any) => prev.slice().reverse())}>变更顺序</button>
+    </div>
   );
 }
 
 export function TodoApp() {
-  return createElement('div', {},
-    createElement(TodoList, {})
+  return (
+    <div>
+      <TodoList />
+    </div>
   );
 }

@@ -1,16 +1,30 @@
 // createElement.ts
-// 构建虚拟 DOM（VNode）
-// 步骤1：根据 type 判断是标签还是组件，生成统一格式的 VNode
-// 详见流程图 B->C->D
+// 构建虚拟 DOM（VNode） + JSX 工厂
+// 支持 <div /> 与 <Component /> 以及 Fragment (<></>)
 import type { VNode } from './types';
 
-export function createElement(type: string | Function, props: Record<string, any> = {}, ...children: any[]): VNode {
-  // 生成虚拟节点对象，包含类型、属性、子节点等
+export const Fragment = Symbol('Fragment');
+
+export function createElement(type: any, props: Record<string, any> | null = {}, ...childArgs: any[]): VNode {
+  // 兼容 JSX classic transform 会传入 null 作为 props
+  let normalizedProps: Record<string, any> = props == null ? {} : props;
+  // 收集 children：优先使用参数，其次 props.children
+  let collected: any[] = [];
+  if (childArgs.length) collected = childArgs.flat();
+  else if (normalizedProps.children != null) collected = Array.isArray(normalizedProps.children) ? normalizedProps.children : [normalizedProps.children];
+  // 统一存储 children，并在 props 中也保留（方便用户读取 props.children）
+  if (collected.length) {
+    // 避免直接修改外部传入对象（可能被冻结）
+    normalizedProps = { ...normalizedProps, children: collected };
+  } else {
+    collected = [];
+    // 确保 props.children 不为 undefined（可选）这里保持不加，避免多余字段
+  }
   return {
-    type, // 标签名或组件函数
-    props: props || {}, // 属性
-    children: children.flat(), // 子节点
-    key: props?.key, // diff 用的 key
-    dom: null, // 挂载后保存真实 DOM
+    type,
+    props: normalizedProps,
+    children: collected,
+    key: normalizedProps.key,
+    dom: null,
   };
 }

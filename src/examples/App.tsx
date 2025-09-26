@@ -1,23 +1,16 @@
 // App.tsx
-// 计数器演示组件，展示 hooks 状态管理和事件绑定
-// 详见流程图 F->G->H->I->J->K
+// 基于自定义 createElement 的 JSX 示例入口组件
 import { createElement, useState } from '../core';
-
-function Counter() {
-  // 使用 useState 管理 count 状态
-  const [count, setCount] = useState(0);
-
-  return createElement('div', {},
-    createElement('h1', {}, `计数器：${count}`),
-    // 点击按钮，调用 setCount 触发状态更新
-    createElement('button', { onClick: () => setCount(count + 1) }, '递增')
-  );
-}
+import { FiberCounter } from './FiberCounter';
+// import { NonFiberCounter } from './NonFiberCounter';
 
 export function App() {
-  // 并列展示两种架构计数器，方便体验对比
-  return createElement('div', {},
-    // createElement(NonFiberCounter, {}),
-    createElement(Counter, {})
+  const [demo, setDemo] = useState(0);
+  return (
+    <div>
+      <h1 style={{ fontFamily: 'monospace' }}>React-mini 示例 (demo={demo})</h1>
+      <button onClick={() => setDemo((d: number) => d + 1)}>本地计数 +1</button>
+      <FiberCounter />
+    </div>
   );
 }
